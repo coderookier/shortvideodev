@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.Properties;
 
 import static java.io.File.separator;
-import static org.n3r.idworker.utils.Serializes.closeQuietly;
+import static org.video.common.org.n3r.idworker.utils.Serializes.closeQuietly;
 
 public class Props {
     static Logger log = LoggerFactory.getLogger(Props.class);
@@ -17,7 +17,10 @@ public class Props {
         InputStream is = null;
         try {
             is = Props.tryResource(propertiesFileName, userHomeBasePath, Silent.ON);
-            if (is != null) properties.load(is);
+            if (is != null)
+            {
+                properties.load(is);
+            }
         } catch (IOException e) {
             log.error("load properties error: {}", e.getMessage());
         } finally {

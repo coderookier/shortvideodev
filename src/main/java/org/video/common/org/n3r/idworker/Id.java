@@ -1,6 +1,7 @@
 package org.video.common.org.n3r.idworker;
 
-import org.n3r.idworker.strategy.DefaultWorkerIdStrategy;
+
+import org.video.common.org.n3r.idworker.strategy.DefaultWorkerIdStrategy;
 
 public class Id {
     private static WorkerIdStrategy workerIdStrategy;

@@ -1,10 +1,11 @@
 package org.video.common.org.n3r.idworker.strategy;
 
-import org.n3r.idworker.Id;
-import org.n3r.idworker.RandomCodeStrategy;
-import org.n3r.idworker.utils.Utils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.video.common.org.n3r.idworker.Id;
+import org.video.common.org.n3r.idworker.RandomCodeStrategy;
+import org.video.common.org.n3r.idworker.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;

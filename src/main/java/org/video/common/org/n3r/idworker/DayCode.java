@@ -1,6 +1,7 @@
 package org.video.common.org.n3r.idworker;
 
-import org.n3r.idworker.strategy.DayPrefixRandomCodeStrategy;
+
+import org.video.common.org.n3r.idworker.strategy.DayPrefixRandomCodeStrategy;
 
 public class DayCode {
     static RandomCodeStrategy strategy;
