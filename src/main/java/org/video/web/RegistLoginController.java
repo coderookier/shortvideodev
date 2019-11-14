@@ -23,7 +23,7 @@ public class RegistLoginController {
     @Autowired
     private UserService userService;
 
-    @ApiOperation(value = "用户登录", notes = "用户注册的接口")
+    @ApiOperation(value = "用户注册", notes = "用户注册的接口")
     @PostMapping("/regist")
     public IMoocJSONResult regist(@RequestBody Users users) throws Exception {
         /**
@@ -53,7 +53,6 @@ public class RegistLoginController {
         else {
             return IMoocJSONResult.errorMsg("用户名已存在，请换一个试试");
         }
-
-        return IMoocJSONResult.ok();
+        return IMoocJSONResult.ok(users);
     }
 }
