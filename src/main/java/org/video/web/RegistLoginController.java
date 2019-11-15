@@ -3,6 +3,7 @@ package org.video.web;
 import com.mysql.jdbc.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.video.common.utils.IMoocJSONResult;
 import org.video.common.utils.MD5Utils;
 import org.video.pojo.Users;
+import org.video.pojo.vo.UsersVO;
 import org.video.service.UserService;
+
+import java.util.UUID;
 
 /**
  * @author gutongxue
@@ -18,7 +22,7 @@ import org.video.service.UserService;
  **/
 @RestController
 @Api(value = "用户注册登录接口", tags = {"注册和登录的controller"})
-public class RegistLoginController {
+public class RegistLoginController extends BasicController {
 
     @Autowired
     private UserService userService;
@@ -56,7 +60,26 @@ public class RegistLoginController {
         else {
             return IMoocJSONResult.errorMsg("用户名已存在，请换一个试试");
         }
-        return IMoocJSONResult.ok(users);
+        UsersVO usersVO = setUserRedisSessionToken(users);
+        return IMoocJSONResult.ok(usersVO);
+    }
+
+    /**
+     * 建立redis-session
+     * @param users
+     * @return
+     */
+    public UsersVO setUserRedisSessionToken(Users users) {
+        //生成用户唯一ID
+        String uniqueToken = UUID.randomUUID().toString();
+        redisOperator.set(USER_REDIS_SESSION + ":" + users.getId(), uniqueToken, 1000 * 60 * 30);
+        //生成此对象包含唯一token，将该对象返回到前端
+        UsersVO usersVO = new UsersVO();
+        //将users对象属性传入usersvo中
+        BeanUtils.copyProperties(users, usersVO);
+        //将唯一token赋值到usersvo中
+        usersVO.setUserToken(uniqueToken);
+        return usersVO;
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录的接口")
@@ -75,7 +98,8 @@ public class RegistLoginController {
 
         //3.返回用户信息
         if (userResult != null) {
-            return IMoocJSONResult.ok(userResult);
+            UsersVO usersVO = setUserRedisSessionToken(userResult);
+            return IMoocJSONResult.ok(usersVO);
         }
         else {
             return IMoocJSONResult.errorMsg("用户名或密码不正确，请重试");
