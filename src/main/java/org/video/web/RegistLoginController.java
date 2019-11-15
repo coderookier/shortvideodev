@@ -25,6 +25,9 @@ public class RegistLoginController {
 
     @ApiOperation(value = "用户注册", notes = "用户注册的接口")
     @PostMapping("/regist")
+    /**
+     * users为前端传入的json对象
+     */
     public IMoocJSONResult regist(@RequestBody Users users) throws Exception {
         /**
          * 1. 判断用户名和密码必须不为空
@@ -54,5 +57,28 @@ public class RegistLoginController {
             return IMoocJSONResult.errorMsg("用户名已存在，请换一个试试");
         }
         return IMoocJSONResult.ok(users);
+    }
+
+    @ApiOperation(value = "用户登录", notes = "用户登录的接口")
+    @PostMapping("/login")
+    public IMoocJSONResult login(@RequestBody Users users) throws Exception {
+        String username = users.getUsername();
+        String password = users.getPassword();
+
+        //1.判断用户名和密码不能为空
+        if (StringUtils.isEmptyOrWhitespaceOnly(username) || StringUtils.isEmptyOrWhitespaceOnly(password)) {
+            return IMoocJSONResult.errorMsg("用户名或密码不能为空");
+        }
+
+        //2.判断用户是否存在
+        Users userResult = userService.queryUserForLogin(username, MD5Utils.getMD5Str(password));
+
+        //3.返回用户信息
+        if (userResult != null) {
+            return IMoocJSONResult.ok(userResult);
+        }
+        else {
+            return IMoocJSONResult.errorMsg("用户名或密码不正确，请重试");
+        }
     }
 }

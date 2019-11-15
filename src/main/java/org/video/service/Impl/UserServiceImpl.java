@@ -39,4 +39,13 @@ public class UserServiceImpl implements UserService {
         users.setId(userId);
         usersMapper.insert(users);
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public Users queryUserForLogin(String username, String password) {
+        Users users = new Users();
+        users.setUsername(username);
+        users.setPassword(password);
+        return usersMapper.selectOne(users);
+    }
 }
