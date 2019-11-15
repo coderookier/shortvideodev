@@ -2,6 +2,7 @@ package org.video.web;
 
 import com.mysql.jdbc.StringUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.util.UUID;
  * @date 2019/11/13 14:28
  **/
 @RestController
-@Api(value = "用户注册登录接口", tags = {"注册和登录的controller"})
+@Api(value = "用户注册登录注销接口", tags = {"注册和登录和注销的controller"})
 public class RegistLoginController extends BasicController {
 
     @Autowired
@@ -104,5 +105,14 @@ public class RegistLoginController extends BasicController {
         else {
             return IMoocJSONResult.errorMsg("用户名或密码不正确，请重试");
         }
+    }
+
+    @ApiOperation(value = "用户注销", notes = "用户注销的接口")
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true,
+            dataType = "String", paramType = "query")
+    @PostMapping("/logout")
+    public IMoocJSONResult logout(String userId) throws Exception {
+        redisOperator.del(USER_REDIS_SESSION + ":" + userId);
+        return IMoocJSONResult.ok();
     }
 }
