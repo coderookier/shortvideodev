@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.video.common.utils.IMoocJSONResult;
+import org.video.pojo.Users;
 import org.video.service.UserService;
 
 import java.io.File;
@@ -35,6 +36,10 @@ public class UserController extends BasicController {
     @PostMapping("/uploadFace")
     public IMoocJSONResult uploadFace(String userId, @RequestParam("file") MultipartFile[] files) throws Exception {
 
+        if (StringUtils.isEmptyOrWhitespaceOnly(userId)) {
+            return IMoocJSONResult.errorMsg("用户ID不能为空");
+        }
+
         //文件保存的命名空间
         String fileSpace = "D:/wxxcx/userfiles";
         //保存到数据库中的相对路径
@@ -50,6 +55,9 @@ public class UserController extends BasicController {
                     //文件上传的最终保存路径
                     String finalFacePath = fileSpace + uploadPathDB + "/" + fileName;
 
+                    //数据库存储路径
+                    uploadPathDB += ("/" + fileName);
+
                     File outFile = new File(finalFacePath);
 
                     if (outFile.getParentFile() != null || !outFile.getParentFile().isDirectory()) {
@@ -61,15 +69,24 @@ public class UserController extends BasicController {
                     inputStream = files[0].getInputStream();
                     IOUtils.copy(inputStream, fileOutputStream);
                 }
+            } else {
+                return IMoocJSONResult.errorMsg("上传出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return IMoocJSONResult.errorMsg("上传出错");
         } finally {
             if (fileOutputStream != null) {
                 fileOutputStream.flush();
                 fileOutputStream.close();
             }
         }
-        return IMoocJSONResult.ok();
+
+        Users users = new Users();
+        users.setId(userId);
+        users.setFaceImage(uploadPathDB);
+        userService.updateUserInfo(users);
+
+        return IMoocJSONResult.ok(uploadPathDB);
     }
 }
