@@ -17,6 +17,7 @@ public class UsersVO {
 
     /**
      * 密码
+     * JsonIgnore将密码不传入前端
      */
     @JsonIgnore
     private String password;

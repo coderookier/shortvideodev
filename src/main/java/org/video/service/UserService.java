@@ -29,4 +29,9 @@ public interface UserService {
      * 用户修改信息
      */
     public void updateUserInfo(Users users);
+
+    /**
+     * 用户信息查询
+     */
+    public Users queryUserInfo(String userId);
 }

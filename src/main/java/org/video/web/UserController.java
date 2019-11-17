@@ -5,11 +5,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.video.common.utils.IMoocJSONResult;
 import org.video.pojo.Users;
+import org.video.pojo.vo.UsersVO;
 import org.video.service.UserService;
 
 import java.io.File;
@@ -88,5 +90,19 @@ public class UserController extends BasicController {
         userService.updateUserInfo(users);
 
         return IMoocJSONResult.ok(uploadPathDB);
+    }
+
+
+    @ApiOperation(value = "用户信息查询", notes = "用户信息查询的接口")
+    @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "String", paramType = "query")
+    @PostMapping("/query")
+    public IMoocJSONResult query(String userId) throws Exception {
+        if (StringUtils.isEmptyOrWhitespaceOnly(userId)) {
+            return IMoocJSONResult.errorMsg("用户ID不能为空");
+        }
+        Users userInfo = userService.queryUserInfo(userId);
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(userInfo, usersVO);
+        return IMoocJSONResult.ok(usersVO);
     }
 }

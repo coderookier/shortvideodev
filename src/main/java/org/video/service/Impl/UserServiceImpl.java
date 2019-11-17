@@ -9,7 +9,6 @@ import org.video.mapper.UsersMapper;
 import org.video.pojo.Users;
 import org.video.service.UserService;
 import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.util.Sqls;
 
 /**
  * @author gutongxue
@@ -51,11 +50,22 @@ public class UserServiceImpl implements UserService {
         return usersMapper.selectOne(users);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void updateUserInfo(Users users) {
         Example userExample = new Example(Users.class);
         Example.Criteria criteria = userExample.createCriteria();
         criteria.andEqualTo("id", users.getId());
         usersMapper.updateByExampleSelective(users, userExample);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public Users queryUserInfo(String userId) {
+        Example userExample = new Example(Users.class);
+        Example.Criteria criteria = userExample.createCriteria();
+        criteria.andEqualTo("id", userId);
+        Users users = usersMapper.selectOneByExample(userExample);
+        return users;
     }
 }
