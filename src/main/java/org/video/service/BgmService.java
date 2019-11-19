@@ -14,4 +14,10 @@ public interface BgmService {
      * 查询背景音乐列表
      */
     public List<Bgm> queryBgmList();
+
+
+    /**
+     * 根据bgmId查询bgm
+     */
+    public Bgm queryBgmById(String bgmId);
 }

@@ -14,3 +14,13 @@ uploadFile成功后后端返回给小程序前端的是String类型对象，显�
 
 org.video.web.VideoController.upload()方法中参数videoSeconds, videoWidth, videoHeight等都必须用String,
 否则会导致String无法转为int错误，造成bad request
+
+使用ffmpeg处理视音频
+
+java通过ProcessBuilder调用CMD,ffmpeg处理过程中会产生inputStream流和errorStream流，需要将error流读取进行释放，否则会卡住线程
+
+给视频添加bgm需要两步，否则可能出现仍然无bgm：
+1. 去除原视频音轨：ffmpeg.exe -i video1.mp4 -c:v copy -an nosound.mp4
+2. 合并音频与视频：ffmpeg.exe -i nosound.mp4 -i bgm.mp3 -t 4 output.mp4
+将ffmpeg版本换带3.4.2可以一步合并：
+ffmpeg.exe -i video1.mp4 -i bgm.mp3 -t 4 -y output.mp4
