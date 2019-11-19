@@ -4,10 +4,7 @@ import com.mysql.jdbc.StringUtils;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.video.common.enums.VideoStatusEnum;
 import org.video.common.utils.IMoocJSONResult;
@@ -15,10 +12,12 @@ import org.video.common.utils.MergeVideoMp3;
 import org.video.pojo.Bgm;
 import org.video.pojo.Videos;
 import org.video.service.BgmService;
+import org.video.service.VideoService;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -33,6 +32,10 @@ public class VideoController extends BasicController{
 
     @Autowired
     private BgmService bgmService;
+
+    @Autowired
+    private VideoService videoService;
+
 
     @ApiOperation(value = "上传视频", notes = "上传视频的接口")
     @ApiImplicitParams({
@@ -49,11 +52,10 @@ public class VideoController extends BasicController{
             @ApiImplicitParam(name = "desc", value = "视频描述", required = false,
                     dataType = "String", paramType = "form")
     })
-    @PostMapping("/upload")
-    public IMoocJSONResult upload(String userId, String bgmId, String videoSeconds,
-                                  String videoWidth, String videoHeight, String desc,
-                                      @RequestParam("file")MultipartFile file) throws Exception {
-    //上面有个巨坑的地方，videoSeconds, videoWidth, videoHeight等都必须用String,否则会导致String无法转为int错误，造成bad request
+    @PostMapping(value="/upload", headers="content-type=multipart/form-data")
+    public IMoocJSONResult upload(String userId, String bgmId, double videoSeconds,
+                                  int videoWidth, int videoHeight, String desc,
+                                  @RequestParam("file")MultipartFile file) throws Exception {
 
         if (StringUtils.isEmptyOrWhitespaceOnly(userId)) {
             return IMoocJSONResult.errorMsg("用户ID不能为空");
@@ -120,17 +122,23 @@ public class VideoController extends BasicController{
         }
         System.out.println("uploadPathDB:" + uploadPathDB);
         System.out.println("finalVideoPath:" + finalVideoPath);
+        Videos videos = null;
 
         //保存视频到数据库
-        Videos videos = new Videos();
+        videos = new Videos();
         videos.setAudioId(bgmId);
         videos.setUserId(userId);
-        videos.setVideoSeconds(Float.parseFloat(videoSeconds));
-        videos.setVideoHeight(Integer.parseInt(videoHeight));
-        videos.setVideoWidth(Integer.parseInt(videoWidth));
+        videos.setVideoSeconds((float)videoSeconds);
+        System.out.println(videoSeconds);
+        System.out.println("videoHeight: " + videoHeight);
+        videos.setVideoHeight(videoHeight);
+        videos.setVideoWidth(videoWidth);
         videos.setVideoDesc(desc);
         videos.setVideoPath(uploadPathDB);
         videos.setStatus(VideoStatusEnum.SUCCESS.value);
+        videos.setCreateTime(new Date());
+
+        videoService.saveVideo(videos);
 
         return IMoocJSONResult.ok();
     }

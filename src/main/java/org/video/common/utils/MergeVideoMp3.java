@@ -17,7 +17,7 @@ public class MergeVideoMp3 {
         this.ffmpegEXE = ffmpegEXE;
     }
 
-    public void convertor(String videoInputPath, String mp3InputPath, String seconds, String videoOutputPath) throws Exception{
+    public void convertor(String videoInputPath, String mp3InputPath, double seconds, String videoOutputPath) throws Exception{
         //ffmpeg.exe -i video1.mp4 -i bgm.mp3 -t 4 -y output.mp4
 
         List<String> command = new ArrayList<>();
@@ -30,7 +30,7 @@ public class MergeVideoMp3 {
         command.add(mp3InputPath);
 
         command.add("-t");
-        command.add(seconds);
+        command.add(String.valueOf(seconds));
 
         command.add("-y");
         command.add(videoOutputPath);
@@ -59,7 +59,7 @@ public class MergeVideoMp3 {
     public static void main(String[] args) {
         MergeVideoMp3 ffMpegTest = new MergeVideoMp3("D:\\ffmpeg\\bin\\ffmpeg.exe");
         try {
-            ffMpegTest.convertor("D:\\wxxcx\\video1.mp4", "D:\\wxxcx\\userfiles\\bgm\\卡路里.mp3", "4", "D:\\wxxcx\\合并.mp4");
+            ffMpegTest.convertor("D:\\wxxcx\\video1.mp4", "D:\\wxxcx\\userfiles\\bgm\\卡路里.mp3", 4, "D:\\wxxcx\\合并.mp4");
         } catch (Exception e) {
             e.printStackTrace();
         }
