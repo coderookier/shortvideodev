@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.video.common.enums.VideoStatusEnum;
+import org.video.common.utils.FetchVideoCover;
 import org.video.common.utils.IMoocJSONResult;
 import org.video.common.utils.MergeVideoMp3;
 import org.video.pojo.Bgm;
@@ -65,12 +66,17 @@ public class VideoController extends BasicController{
         //String fileSpace = "D:/wxxcx/userfiles";
         //视频保存到数据库中的相对路径
         String uploadPathDB = "/" + userId + "/video";
+        //封面保存到数据库的相对路径
+        String coverPathDB = "/" + userId + "/video";
         String finalVideoPath = "";
         FileOutputStream fileOutputStream = null;
         InputStream inputStream;
         try {
             if (file != null) {
+                //视频名称
                 String fileName = file.getOriginalFilename();
+                //取视频名称前缀作为图片名称前缀
+                String fileNamePrefix = fileName.split("\\.")[0];
                 System.out.println(fileName);
                 if (!StringUtils.isEmptyOrWhitespaceOnly(fileName)) {
                     //文件上传的最终保存路径
@@ -78,6 +84,7 @@ public class VideoController extends BasicController{
 
                     //数据库存储路径
                     uploadPathDB += ("/" + fileName);
+                    coverPathDB = coverPathDB + "/" + fileNamePrefix + ".jpg";
 
                     File outFile = new File(finalVideoPath);
 
@@ -124,6 +131,10 @@ public class VideoController extends BasicController{
         System.out.println("finalVideoPath:" + finalVideoPath);
         Videos videos = null;
 
+        //对视频进行截图，并存储在文件夹中
+        FetchVideoCover fetchVideoCover = new FetchVideoCover(FFMPEG_EXE);
+        fetchVideoCover.getCover(finalVideoPath, FILE_SPACE + coverPathDB);
+
         //保存视频到数据库
         videos = new Videos();
         videos.setAudioId(bgmId);
@@ -135,6 +146,7 @@ public class VideoController extends BasicController{
         videos.setVideoWidth(videoWidth);
         videos.setVideoDesc(desc);
         videos.setVideoPath(uploadPathDB);
+        videos.setCoverPath(coverPathDB);
         videos.setStatus(VideoStatusEnum.SUCCESS.value);
         videos.setCreateTime(new Date());
 
@@ -154,7 +166,9 @@ public class VideoController extends BasicController{
 
     })
 
-
+    /**
+     * 这部分由于手机端无效，所以上传封面集成到上一部分内容
+     */
     @PostMapping(value="/uploadCover", headers="content-type=multipart/form-data")
     public IMoocJSONResult uploadCover(String videoId, String userId, @RequestParam("file")MultipartFile file) throws Exception {
 
