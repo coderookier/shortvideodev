@@ -13,6 +13,13 @@ public interface VideoService {
 
     /**
      * 保存视频到数据库
+     * 返回视频主键ID用于后面上传封面到数据库
      */
-    public void saveVideo(Videos videos);
+    public String saveVideo(Videos videos);
+
+
+    /**
+     * 修改视频的封面
+     */
+    public void updateVideo(String videoId, String coverPath);
 }

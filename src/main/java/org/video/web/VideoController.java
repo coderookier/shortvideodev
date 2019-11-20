@@ -138,7 +138,73 @@ public class VideoController extends BasicController{
         videos.setStatus(VideoStatusEnum.SUCCESS.value);
         videos.setCreateTime(new Date());
 
-        videoService.saveVideo(videos);
+        String videoId = videoService.saveVideo(videos);
+
+        return IMoocJSONResult.ok(videoId);
+    }
+
+
+    @ApiOperation(value = "上传视频封面", notes = "上传视频封面的接口")
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "videoId", value = "视频主键ID", required = true,
+                    dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "userId", value = "用户ID", required = true,
+                    dataType = "String", paramType = "form"),
+
+    })
+
+
+    @PostMapping(value="/uploadCover", headers="content-type=multipart/form-data")
+    public IMoocJSONResult uploadCover(String videoId, String userId, @RequestParam("file")MultipartFile file) throws Exception {
+
+        if (StringUtils.isEmptyOrWhitespaceOnly(videoId) || StringUtils.isEmptyOrWhitespaceOnly(userId)) {
+            return IMoocJSONResult.errorMsg("视频ID和用户ID不能为空");
+        }
+
+        //文件保存的命名空间
+        //String fileSpace = "D:/wxxcx/userfiles";
+        //视频保存到数据库中的相对路径
+        String uploadPathDB = "/" + userId + "/video";
+        String finalCoverPath = "";
+        FileOutputStream fileOutputStream = null;
+        InputStream inputStream;
+        try {
+            if (file != null) {
+                String fileName = file.getOriginalFilename();
+                System.out.println(fileName);
+                if (!StringUtils.isEmptyOrWhitespaceOnly(fileName)) {
+                    //文件上传的最终保存路径
+                    finalCoverPath = FILE_SPACE + uploadPathDB + "/" + fileName;
+
+                    //数据库存储路径
+                    uploadPathDB += ("/" + fileName);
+
+                    File outFile = new File(finalCoverPath);
+
+                    if (outFile.getParentFile() != null || !outFile.getParentFile().isDirectory()) {
+                        // 创建父文件夹
+                        outFile.getParentFile().mkdirs();
+                    }
+
+                    fileOutputStream = new FileOutputStream(outFile);
+                    inputStream = file.getInputStream();
+                    IOUtils.copy(inputStream, fileOutputStream);
+                }
+            } else {
+                return IMoocJSONResult.errorMsg("上传出错");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return IMoocJSONResult.errorMsg("上传出错");
+        } finally {
+            if (fileOutputStream != null) {
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            }
+        }
+
+        videoService.updateVideo(videoId, uploadPathDB);
 
         return IMoocJSONResult.ok();
     }
