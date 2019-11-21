@@ -30,3 +30,5 @@ ffmpeg.exe -i video1.mp4 -i bgm.mp3 -t 4 -y output.mp4
 使用pagehelper进行分页，把sql语句进行拦截，使用新的语句去查询数据库，支持上拉和下拉刷新
 
 利用github开源项目wsSearchView实现视频搜索功能
+
+视频详情页实现视频上传，对upload代码进行复用，利用页面生命周期，对进行操作时的详情页视频进行暂停播放
