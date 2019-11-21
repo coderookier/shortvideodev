@@ -24,3 +24,7 @@ java通过ProcessBuilder调用CMD,ffmpeg处理过程中会产生inputStream流�
 ffmpeg.exe -i video1.mp4 -i bgm.mp3 -t 4 -y output.mp4
 
 手机端测试时无法保存上传视频成功后回调函数返回的封面到数据库中，需要手动生成,使用ffmpeg截一张图作为封面
+
+首先显示视频封面与用户头像和昵称，即需要进行关联查询
+
+使用pagehelper进行分页，把sql语句进行拦截，使用新的语句去查询数据库，支持上拉和下拉刷新

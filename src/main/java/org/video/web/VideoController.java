@@ -10,6 +10,7 @@ import org.video.common.enums.VideoStatusEnum;
 import org.video.common.utils.FetchVideoCover;
 import org.video.common.utils.IMoocJSONResult;
 import org.video.common.utils.MergeVideoMp3;
+import org.video.common.utils.PagedResult;
 import org.video.pojo.Bgm;
 import org.video.pojo.Videos;
 import org.video.service.BgmService;
@@ -221,5 +222,15 @@ public class VideoController extends BasicController{
         videoService.updateVideo(videoId, uploadPathDB);
 
         return IMoocJSONResult.ok();
+    }
+
+
+    @PostMapping("/showAll")
+    public IMoocJSONResult showAll(Integer page) throws Exception {
+        if (page == null) {
+            page = 1;
+        }
+        PagedResult pagedResult = videoService.getAllVideos(page, PAGE_SIZE);
+        return IMoocJSONResult.ok(pagedResult);
     }
 }

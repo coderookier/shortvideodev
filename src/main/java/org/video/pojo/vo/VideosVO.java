@@ -17,6 +17,7 @@ public class VideosVO {
     private Integer status;
     private Date createTime;
 
+    //这两个属性需要进行关联查询返回到首页
     private String faceImage;
     private String nickname;
 
