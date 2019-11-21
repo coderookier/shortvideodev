@@ -224,13 +224,28 @@ public class VideoController extends BasicController{
         return IMoocJSONResult.ok();
     }
 
+    /**
+     * 分页和搜索查询视频列表
+     * isSaveRecord: 1需要保存，0或者空不需要保存
+     */
 
     @PostMapping("/showAll")
-    public IMoocJSONResult showAll(Integer page) throws Exception {
+    public IMoocJSONResult showAll(@RequestBody Videos videos, Integer isSaveRecord,
+                                   Integer page) throws Exception {
         if (page == null) {
             page = 1;
         }
-        PagedResult pagedResult = videoService.getAllVideos(page, PAGE_SIZE);
+        PagedResult pagedResult = videoService.getAllVideos(videos, isSaveRecord, page, PAGE_SIZE);
         return IMoocJSONResult.ok(pagedResult);
+    }
+
+    /**
+     * 展示热搜词页面
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/hot")
+    public IMoocJSONResult hot() throws Exception {
+        return IMoocJSONResult.ok(videoService.getHotWords());
     }
 }

@@ -27,5 +27,11 @@ public interface VideoService {
      * 分页查询视频列表
      * page当前显示的页数，pageSize为每页记录数
      */
-    public PagedResult getAllVideos(Integer page, Integer pageSize);
+    public PagedResult getAllVideos(Videos videos, Integer isSaveRecord, Integer page, Integer pageSize);
+
+    /**
+     * 获取热搜词列表
+     * @return
+     */
+    public List<String> getHotWords();
 }

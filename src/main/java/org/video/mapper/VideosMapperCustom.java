@@ -13,5 +13,5 @@ public interface VideosMapperCustom extends MyMapper<Videos> {
 	/**
 	 * @Description: 关联查询
 	 */
-	public List<VideosVO> queryAllVideos();
+	public List<VideosVO> queryAllVideos(@Param("videoDesc") String videoDesc);
 }

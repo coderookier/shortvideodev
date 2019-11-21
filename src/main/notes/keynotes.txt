@@ -28,3 +28,5 @@ ffmpeg.exe -i video1.mp4 -i bgm.mp3 -t 4 -y output.mp4
 首先显示视频封面与用户头像和昵称，即需要进行关联查询
 
 使用pagehelper进行分页，把sql语句进行拦截，使用新的语句去查询数据库，支持上拉和下拉刷新
+
+利用github开源项目wsSearchView实现视频搜索功能

@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.video.common.org.n3r.idworker.Sid;
 import org.video.common.utils.PagedResult;
+import org.video.mapper.SearchRecordsMapper;
 import org.video.mapper.VideosMapper;
 import org.video.mapper.VideosMapperCustom;
+import org.video.pojo.SearchRecords;
 import org.video.pojo.Videos;
 import org.video.pojo.vo.VideosVO;
 import org.video.service.VideoService;
@@ -32,6 +34,9 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private VideosMapperCustom videosMapperCustom;
 
+    @Autowired
+    private SearchRecordsMapper searchRecordsMapper;
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public String saveVideo(Videos videos) {
@@ -52,14 +57,25 @@ public class VideoServiceImpl implements VideoService {
 
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public PagedResult getAllVideos(Integer page, Integer pageSize) {
+    public PagedResult getAllVideos(Videos videos, Integer isSaveRecord, Integer page, Integer pageSize) {
+
+        //保存热搜词
+        String desc = videos.getVideoDesc();
+        if (isSaveRecord != null && isSaveRecord == 1) {
+            SearchRecords searchRecords = new SearchRecords();
+            String recordId = sid.nextShort();
+            searchRecords.setId(recordId);
+            searchRecords.setContent(desc);
+            searchRecordsMapper.insert(searchRecords);
+        }
 
         //需要进行分页
         PageHelper.startPage(page, pageSize);
 
         //进行全表查询
-        List<VideosVO> list = videosMapperCustom.queryAllVideos();
+        List<VideosVO> list = videosMapperCustom.queryAllVideos(desc);
 
         //页面信息
         PageInfo<VideosVO> pageInfo = new PageInfo<VideosVO>(list);
@@ -71,5 +87,11 @@ public class VideoServiceImpl implements VideoService {
         pagedResult.setRecords(pageInfo.getTotal());
 
         return pagedResult;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<String> getHotWords() {
+        return searchRecordsMapper.getHotwords();
     }
 }

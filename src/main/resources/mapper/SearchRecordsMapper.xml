@@ -2,9 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.video.mapper.SearchRecordsMapper" >
   <resultMap id="BaseResultMap" type="org.video.pojo.SearchRecords" >
-    <!--
-      WARNING - @mbg.generated
-    -->
+
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="content" property="content" jdbcType="VARCHAR" />
   </resultMap>
