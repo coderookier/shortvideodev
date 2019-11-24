@@ -8,7 +8,7 @@ public class UsersVO {
 	
 	private String userToken;
 	
-	private boolean isFollow;
+	private boolean follow;
 
     /**
      * 用户名
@@ -196,10 +196,10 @@ public class UsersVO {
 	}
 
 	public boolean isFollow() {
-		return isFollow;
+		return follow;
 	}
 
-	public void setFollow(boolean isFollow) {
-		this.isFollow = isFollow;
+	public void setFollow(boolean follow) {
+		this.follow = follow;
 	}
 }

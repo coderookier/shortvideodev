@@ -35,12 +35,12 @@ public class MiniInterceptor implements HandlerInterceptor {
          * 返回false代表请求被拦截
          * 返回true表示请求放行
          */
-        String userId = request.getHeader("userId");
+        String userId = request.getHeader("headeruserId");
         //登录成功后生成的唯一token
-        String userToken = request.getHeader("userToken");
-        if (!StringUtils.isEmptyOrWhitespaceOnly(userId) && !StringUtils.isEmptyOrWhitespaceOnly(userToken)) {
+        String userToken = request.getHeader("headerUserToken");
+        if (!StringUtils.isNullOrEmpty(userId) && !StringUtils.isNullOrEmpty(userToken)) {
             String uniqueToken = redisOperator.get(USER_REDIS_SESSION + ":" + userId);
-            if (StringUtils.isEmptyOrWhitespaceOnly(uniqueToken)) {
+            if (StringUtils.isNullOrEmpty(uniqueToken)) {
                 System.out.println("会话已过期，请登录");
                 //将信息返回到前端
                 returnErrorResponse(response, IMoocJSONResult.errorTokenMsg("请登录..."));
@@ -53,6 +53,7 @@ public class MiniInterceptor implements HandlerInterceptor {
                 }
             }
         } else {
+            System.out.println("请登录...");
             returnErrorResponse(response, IMoocJSONResult.errorTokenMsg("请登录..."));
             return false;
         }
