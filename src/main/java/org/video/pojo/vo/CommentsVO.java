@@ -1,9 +1,6 @@
 package org.video.pojo.vo;
 
 import java.util.Date;
-import javax.persistence.*;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 public class CommentsVO {
     private String id;

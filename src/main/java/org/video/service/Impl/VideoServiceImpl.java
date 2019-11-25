@@ -8,14 +8,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.video.common.org.n3r.idworker.Sid;
 import org.video.common.utils.PagedResult;
+import org.video.common.utils.TimeAgoUtils;
 import org.video.mapper.*;
+import org.video.pojo.Comments;
 import org.video.pojo.SearchRecords;
 import org.video.pojo.UsersLikeVideos;
 import org.video.pojo.Videos;
+import org.video.pojo.vo.CommentsVO;
 import org.video.pojo.vo.VideosVO;
 import org.video.service.VideoService;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,6 +46,12 @@ public class VideoServiceImpl implements VideoService {
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private CommentsMapper commentsMapper;
+
+    @Autowired
+    private CommentsMapperCustom commentsMapperCustom;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -169,5 +179,32 @@ public class VideoServiceImpl implements VideoService {
 
         //3. 用户受喜欢数量减
         usersMapper.reduceReceiveLikeCount(VideoCreaterId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void saveComment(Comments comments) {
+        String id = sid.nextShort();
+        comments.setId(id);
+        comments.setCreateTime(new Date());
+        commentsMapper.insert(comments);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<CommentsVO> list = commentsMapperCustom.queryComments(videoId);
+        for (CommentsVO c : list) {
+            String timeAgo = TimeAgoUtils.format(c.getCreateTime());
+            c.setTimeAgoStr(timeAgo);
+        }
+        PageInfo<CommentsVO> pageList = new PageInfo<>(list);
+        PagedResult grid = new PagedResult();
+        grid.setTotal(pageList.getPages());
+        grid.setRows(list);
+        grid.setPage(page);
+        grid.setRecords(pageList.getTotal());
+        return grid;
     }
 }

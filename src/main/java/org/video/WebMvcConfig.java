@@ -38,7 +38,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         //通过registry进行注册
         registry.addInterceptor(miniInterceptor()).addPathPatterns("/user/**")
                 .addPathPatterns("/video/upload", "/video/uploadCover",
-                        "/video/userLike", "/video/userUnlike")
+                        "/video/userLike", "/video/userUnlike", "/video/userUnlike")
                                                   .addPathPatterns("/bgm/**")
                                                   .excludePathPatterns("/user/queryPublisher");
         super.addInterceptors(registry);

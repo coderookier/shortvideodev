@@ -12,6 +12,7 @@ import org.video.common.utils.IMoocJSONResult;
 import org.video.common.utils.MergeVideoMp3;
 import org.video.common.utils.PagedResult;
 import org.video.pojo.Bgm;
+import org.video.pojo.Comments;
 import org.video.pojo.Videos;
 import org.video.service.BgmService;
 import org.video.service.VideoService;
@@ -307,5 +308,34 @@ public class VideoController extends BasicController{
         return IMoocJSONResult.ok();
     }
 
+    /**
+     * 保存留言信息
+     */
+    @PostMapping("/saveComment")
+    public IMoocJSONResult saveComment(@RequestBody Comments comments, String fatherCommentId, String toUserId) throws Exception{
+        if (!StringUtils.isNullOrEmpty(fatherCommentId) && !StringUtils.isNullOrEmpty(toUserId)) {
+            comments.setFatherCommentId(fatherCommentId);
+            comments.setToUserId(toUserId);
+        }
+        videoService.saveComment(comments);
+        return IMoocJSONResult.ok();
+    }
 
+    /**
+     * 查询评论留言信息
+     */
+    @PostMapping("/getVideoComments")
+    public IMoocJSONResult getVideoComments(String videoId, Integer page, Integer pageSize) throws Exception {
+        if (StringUtils.isNullOrEmpty(videoId)) {
+            return IMoocJSONResult.ok();
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        PagedResult list = videoService.getAllComments(videoId, page, pageSize);
+        return IMoocJSONResult.ok(list);
+    }
 }

@@ -1,6 +1,7 @@
 package org.video.service;
 
 import org.video.common.utils.PagedResult;
+import org.video.pojo.Comments;
 import org.video.pojo.Videos;
 
 import java.util.List;
@@ -57,5 +58,10 @@ public interface VideoService {
      */
     public void userUnlikeVideo(String userId, String videoId, String VideoCreaterId);
 
+    /**
+     * 保存评论信息
+     */
+    public void saveComment(Comments comments);
 
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize);
 }
