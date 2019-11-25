@@ -306,4 +306,6 @@ public class VideoController extends BasicController{
         videoService.userUnlikeVideo(userId, videoId, videoCreaterId);
         return IMoocJSONResult.ok();
     }
+
+
 }

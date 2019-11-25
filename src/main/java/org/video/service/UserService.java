@@ -1,6 +1,7 @@
 package org.video.service;
 
 import org.video.pojo.Users;
+import org.video.pojo.UsersReport;
 
 /**
  * @author gutongxue
@@ -54,5 +55,10 @@ public interface UserService {
      * 查询用户是否关注某用户
      */
     public boolean queryIfFollow(String userId, String fanId);
+
+    /**
+     * 举报用户
+     */
+    public void reportUser(UsersReport usersReport);
 
 }

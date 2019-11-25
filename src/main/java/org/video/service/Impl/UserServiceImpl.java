@@ -9,12 +9,15 @@ import org.video.common.org.n3r.idworker.Sid;
 import org.video.mapper.UsersFansMapper;
 import org.video.mapper.UsersLikeVideosMapper;
 import org.video.mapper.UsersMapper;
+import org.video.mapper.UsersReportMapper;
 import org.video.pojo.Users;
 import org.video.pojo.UsersFans;
 import org.video.pojo.UsersLikeVideos;
+import org.video.pojo.UsersReport;
 import org.video.service.UserService;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UsersFansMapper usersFansMapper;
+
+    @Autowired
+    UsersReportMapper usersReportMapper;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -144,5 +150,15 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void reportUser(UsersReport usersReport) {
+        String urId = sid.nextShort();
+        usersReport.setId(urId);
+        usersReport.setCreateDate(new Date());
+
+        usersReportMapper.insert(usersReport);
     }
 }
