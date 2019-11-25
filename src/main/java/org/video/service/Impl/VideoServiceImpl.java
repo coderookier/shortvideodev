@@ -69,6 +69,7 @@ public class VideoServiceImpl implements VideoService {
 
         //保存热搜词
         String desc = videos.getVideoDesc();
+        String userId = videos.getUserId();
         if (isSaveRecord != null && isSaveRecord == 1) {
             SearchRecords searchRecords = new SearchRecords();
             String recordId = sid.nextShort();
@@ -81,16 +82,50 @@ public class VideoServiceImpl implements VideoService {
         PageHelper.startPage(page, pageSize);
 
         //进行全表查询
-        List<VideosVO> list = videosMapperCustom.queryAllVideos(desc);
+        List<VideosVO> list = videosMapperCustom.queryAllVideos(desc, userId);
 
         //页面信息
-        PageInfo<VideosVO> pageInfo = new PageInfo<VideosVO>(list);
+        PageInfo<VideosVO> pageInfo = new PageInfo<>(list);
 
         PagedResult pagedResult = new PagedResult();
         pagedResult.setPage(page);
         pagedResult.setTotal(pageInfo.getPages());
         pagedResult.setRows(list);
         pagedResult.setRecords(pageInfo.getTotal());
+
+        return pagedResult;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedResult queryMyLikeVideos(String userId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<VideosVO> list = videosMapperCustom.queryMylikeVideos(userId);
+
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setTotal(pageList.getPages());
+        pagedResult.setRows(list);
+        pagedResult.setPage(page);
+        pagedResult.setRecords(pageList.getTotal());
+
+        return pagedResult;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedResult queryMyFollowVideos(String userId, Integer page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<VideosVO> list = videosMapperCustom.queryMyFollowVideos(userId);
+
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setTotal(pageList.getPages());
+        pagedResult.setRows(list);
+        pagedResult.setPage(page);
+        pagedResult.setRecords(pageList.getTotal());
 
         return pagedResult;
     }

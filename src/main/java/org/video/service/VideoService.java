@@ -30,6 +30,17 @@ public interface VideoService {
     public PagedResult getAllVideos(Videos videos, Integer isSaveRecord, Integer page, Integer pageSize);
 
     /**
+     * 查询我点赞过的视频列表
+     */
+    PagedResult queryMyLikeVideos(String userId, Integer page, Integer pageSize);
+
+    /**
+     *
+     */
+    public PagedResult queryMyFollowVideos(String userId, Integer page, int pageSize);
+
+
+    /**
      * 获取热搜词列表
      * @return
      */
@@ -45,5 +56,6 @@ public interface VideoService {
      * 用户取消点赞
      */
     public void userUnlikeVideo(String userId, String videoId, String VideoCreaterId);
+
 
 }

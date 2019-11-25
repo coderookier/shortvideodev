@@ -231,12 +231,51 @@ public class VideoController extends BasicController{
 
     @PostMapping("/showAll")
     public IMoocJSONResult showAll(@RequestBody Videos videos, Integer isSaveRecord,
-                                   Integer page) throws Exception {
+                                   Integer page, Integer pageSize) throws Exception {
         if (page == null) {
             page = 1;
         }
-        PagedResult pagedResult = videoService.getAllVideos(videos, isSaveRecord, page, PAGE_SIZE);
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
+        PagedResult pagedResult = videoService.getAllVideos(videos, isSaveRecord, page, pageSize);
         return IMoocJSONResult.ok(pagedResult);
+    }
+
+
+    /**
+     * 我点赞过的视频列表
+     */
+    @PostMapping("/showMyLike")
+    public IMoocJSONResult showMyLike(String userId, Integer page, Integer pageSize) throws Exception{
+        if (StringUtils.isNullOrEmpty(userId)) {
+            return IMoocJSONResult.ok();
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 6;
+        }
+
+        PagedResult videosList = videoService.queryMyLikeVideos(userId, page, pageSize);
+        return IMoocJSONResult.ok(videosList);
+    }
+
+    /**
+     * 我关注的人发布的视频
+     */
+    @PostMapping("/ShowMyFollow")
+    public IMoocJSONResult showMyFollow(String userId, Integer page) throws Exception {
+        if (StringUtils.isNullOrEmpty(userId)) {
+            return IMoocJSONResult.ok();
+        }
+        if (page == null) {
+            page = 1;
+        }
+        int pageSize = 6;
+        PagedResult videosList = videoService.queryMyFollowVideos(userId, page, pageSize);
+        return IMoocJSONResult.ok(videosList);
     }
 
     /**
