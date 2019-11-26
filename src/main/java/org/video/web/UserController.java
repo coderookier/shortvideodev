@@ -110,6 +110,7 @@ public class UserController extends BasicController {
         return IMoocJSONResult.ok(usersVO);
     }
 
+    @ApiOperation(value = "视频详情页的发布者信息与点赞查询", notes = "视频详情页的发布者信息与点赞查询接口")
     @PostMapping("/queryPublisher")
     public IMoocJSONResult queryPublisher(String loginUserId, String videoId, String publishUserId) throws Exception {
         if (StringUtils.isNullOrEmpty(publishUserId)) {
@@ -130,6 +131,7 @@ public class UserController extends BasicController {
         return IMoocJSONResult.ok(publisherVideo);
     }
 
+    @ApiOperation(value = "关注用户", notes = "关注用户接口")
     @PostMapping("/beyourfans")
     public IMoocJSONResult beyourfans(String userId, String fanId) throws Exception{
         if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(fanId)) {
@@ -140,6 +142,7 @@ public class UserController extends BasicController {
         return IMoocJSONResult.ok("关注成功!");
     }
 
+    @ApiOperation(value = "取消关注用户", notes = "取消关注用户接口")
     @PostMapping("/dontbeyourfans")
     public IMoocJSONResult dontbeyourfans(String userId, String fanId) throws Exception{
         if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(fanId)) {
@@ -149,6 +152,7 @@ public class UserController extends BasicController {
         return IMoocJSONResult.ok("取消关注成功!");
     }
 
+    @ApiOperation(value = "举报用户", notes = "举报用户接口")
     @PostMapping("/reportUser")
     public IMoocJSONResult reportUser(@RequestBody UsersReport usersReport) throws Exception{
         userService.reportUser(usersReport);

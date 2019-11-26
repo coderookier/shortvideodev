@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public boolean isUserLikeVideo(String userId, String videoId) {
-
+        //用户未登录时返回false
         if (StringUtils.isNullOrEmpty(userId) || StringUtils.isNullOrEmpty(videoId)) {
             return false;
         }

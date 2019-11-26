@@ -228,8 +228,10 @@ public class VideoController extends BasicController{
     /**
      * 分页和搜索查询视频列表
      * isSaveRecord: 1需要保存，0或者空不需要保存
+     * videos包含搜索查询时前端传入的videoDesc: searchContent信息或者查询某用户发布的视频时前端传入的userId: me.data.userId
      */
 
+    @ApiOperation(value = "分页查询所有视频", notes = "分页查询所有视频的接口")
     @PostMapping("/showAll")
     public IMoocJSONResult showAll(@RequestBody Videos videos, Integer isSaveRecord,
                                    Integer page, Integer pageSize) throws Exception {
@@ -247,6 +249,7 @@ public class VideoController extends BasicController{
     /**
      * 我点赞过的视频列表
      */
+    @ApiOperation(value = "分页查询用户点赞过的视频", notes = "分页查询用户点赞过的视频接口")
     @PostMapping("/showMyLike")
     public IMoocJSONResult showMyLike(String userId, Integer page, Integer pageSize) throws Exception{
         if (StringUtils.isNullOrEmpty(userId)) {
@@ -266,6 +269,7 @@ public class VideoController extends BasicController{
     /**
      * 我关注的人发布的视频
      */
+    @ApiOperation(value = "分页查询我关注的用户发布的视频", notes = "分页查询我关注的用户发布的视频接口")
     @PostMapping("/ShowMyFollow")
     public IMoocJSONResult showMyFollow(String userId, Integer page) throws Exception {
         if (StringUtils.isNullOrEmpty(userId)) {
@@ -284,6 +288,7 @@ public class VideoController extends BasicController{
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "热搜词展示", notes = "热搜词展示接口")
     @PostMapping("/hot")
     public IMoocJSONResult hot() throws Exception {
         return IMoocJSONResult.ok(videoService.getHotWords());
@@ -293,6 +298,7 @@ public class VideoController extends BasicController{
     /**
      * 用户点赞视频
      */
+    @ApiOperation(value = "点赞视频", notes = "点赞视频的接口")
     @PostMapping("/userLike")
     public IMoocJSONResult userLike(String userId, String videoId, String videoCreaterId) throws Exception {
         videoService.userLikeVideo(userId, videoId, videoCreaterId);
@@ -302,6 +308,7 @@ public class VideoController extends BasicController{
     /**
      * 用户取消点赞视频
      */
+    @ApiOperation(value = "取消点赞视频", notes = "取消点赞视频的接口")
     @PostMapping("/userUnlike")
     public IMoocJSONResult userUnlike(String userId, String videoId, String videoCreaterId) throws Exception {
         videoService.userUnlikeVideo(userId, videoId, videoCreaterId);
@@ -311,8 +318,10 @@ public class VideoController extends BasicController{
     /**
      * 保存留言信息
      */
+    @ApiOperation(value = "保存留言信息", notes = "保存留言信息的接口")
     @PostMapping("/saveComment")
     public IMoocJSONResult saveComment(@RequestBody Comments comments, String fatherCommentId, String toUserId) throws Exception{
+
         if (!StringUtils.isNullOrEmpty(fatherCommentId) && !StringUtils.isNullOrEmpty(toUserId)) {
             comments.setFatherCommentId(fatherCommentId);
             comments.setToUserId(toUserId);
@@ -324,6 +333,7 @@ public class VideoController extends BasicController{
     /**
      * 查询评论留言信息
      */
+    @ApiOperation(value = "分页查询视频的留言信息", notes = "分页查询视频的留言信息接口")
     @PostMapping("/getVideoComments")
     public IMoocJSONResult getVideoComments(String videoId, Integer page, Integer pageSize) throws Exception {
         if (StringUtils.isNullOrEmpty(videoId)) {
