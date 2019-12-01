@@ -30,6 +30,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     /**
+     * 注册zookeeper客户端到spring中
+     * @return
+     */
+    @Bean(initMethod = "init")
+    public ZKCuratorClient zkCuratorClient() {
+        return new ZKCuratorClient();
+    }
+
+
+    /**
      * 将自定义的拦截器注册到拦截器中心
      * @param registry
      */
