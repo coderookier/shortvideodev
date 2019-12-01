@@ -35,12 +35,15 @@ public class ZKCuratorClient {
     @Autowired
     private BgmService bgmService;
 
+    @Autowired
+    private ResourceConfig resourceConfig;
+
     //zookeeper客户端
     private CuratorFramework client = null;
 
     final static Logger logger = LoggerFactory.getLogger(ZKCuratorClient.class);
 
-    public static final String ZOOKEEPER_SERVER = "121.248.55.164:2181";
+   // public static final String ZOOKEEPER_SERVER = "121.248.55.164:2181";
 
     public void init() {
         if (client != null) {
@@ -49,7 +52,7 @@ public class ZKCuratorClient {
         //重连策略
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(10000, 5);
         //创建zk客户端
-        client = CuratorFrameworkFactory.builder().connectString(ZOOKEEPER_SERVER)
+        client = CuratorFrameworkFactory.builder().connectString(resourceConfig.getZookeeperServer())
                 .sessionTimeoutMs(100000).retryPolicy(retryPolicy).namespace("admin").build();
         //启动客户端
         client.start();
@@ -101,7 +104,7 @@ public class ZKCuratorClient {
                     String songPath = bgmPath;
 
                     //2. 定义保存到本地的bgm路径
-                    String filePath = "D:\\wxxcx\\userfiles" + songPath;
+                    String filePath = resourceConfig.getFileSpace() + songPath;
 
                     //3. 定义下载的路径（播放url）
                     String[] arrPath = songPath.split("\\\\");
@@ -113,7 +116,7 @@ public class ZKCuratorClient {
                             finalPath += URLEncoder.encode(arrPath[i], "UTF-8");
                         }
                     }
-                    String bgmUrl = "http://121.248.54.185:8080/mvc" + finalPath;
+                    String bgmUrl = resourceConfig.getBgmServer() + finalPath;
 
                     //添加bgm后下载
                     if (operatorType.equals(BGMOperatorTypeEnum.ADD.type)) {
