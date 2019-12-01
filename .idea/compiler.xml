@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="shortvideodev" />
+        <module name="shortvideo-dev" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="shortvideo-dev" target="10" />
+    </bytecodeTargetLevel>
   </component>
 </project>
